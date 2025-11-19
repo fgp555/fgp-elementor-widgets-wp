@@ -1,0 +1,28 @@
+.fgp-form {
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fgp-form input,
+.fgp-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.fgp-form button {
+    background: #0073e6;
+    color: #fff;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.fgp-form button:hover {
+    background: #005bb5;
+}
