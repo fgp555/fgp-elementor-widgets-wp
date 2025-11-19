@@ -1,32 +1,39 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class FGP_Hello_Widget extends \Elementor\Widget_Base {
+class FGP_Hello_Widget extends \Elementor\Widget_Base
+{
 
-    public function get_name() {
+    public function get_name()
+    {
         return 'fgp_hello_widget';
     }
 
-    public function get_title() {
+    public function get_title()
+    {
         return 'FGP Hello World';
     }
 
-    public function get_icon() {
+    public function get_icon()
+    {
         return 'eicon-text';
     }
 
-    public function get_categories() {
+    public function get_categories()
+    {
         return ['fgp-widgets'];
     }
 
-    public function get_style_depends() {
+    public function get_style_depends()
+    {
         return ['fgp-hello-style'];
     }
 
-    protected function register_controls() {
+    protected function register_controls()
+    {
         $this->start_controls_section(
             'section_content',
-            [ 'label' => 'Contenido' ]
+            ['label' => 'Contenido']
         );
 
         $this->add_control(
@@ -41,7 +48,8 @@ class FGP_Hello_Widget extends \Elementor\Widget_Base {
         $this->end_controls_section();
     }
 
-    protected function render() {
+    protected function render()
+    {
         $settings = $this->get_settings_for_display();
         echo '<h2 class="fgp-hello-text">' . esc_html($settings['mensaje']) . '</h2>';
     }
