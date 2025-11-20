@@ -3,7 +3,7 @@
 /**
  * Plugin Name: .FGP Elementor Widgets
  * Description: Widgets personalizados para Elementor (Hello, Gallery, Form).
- * Version: 1.1.1
+ * Version: 2025.11.19
  * Author: Frank GP
  * Author URI: https://frankgp.com
  * Text Domain: fgp-elementor-widgets
@@ -11,9 +11,12 @@
 
 if (!defined('ABSPATH')) exit;
 
+require_once __DIR__ . '/includes/class-fgp-updater.php';
+new FGP_Remote_Updater();
+
 /* -------------------------------------------------------------------------
    REGISTRAR WIDGETS — SOLO UN HOOK
-------------------------------------------------------------------------- */
+-------------------------------------------------------------------------  */
 add_action('elementor/widgets/register', function ($widgets_manager) {
 
     // Hello

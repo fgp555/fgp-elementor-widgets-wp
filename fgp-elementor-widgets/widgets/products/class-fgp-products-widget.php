@@ -202,60 +202,129 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
             echo '<p>WooCommerce no está activo</p>';
             return;
         }
+
         $settings = $this->get_settings_for_display();
 
-        // Contenedor principal del widget
+        // ---------------------------------------------
+        // CONTENEDOR PRINCIPAL
+        // ---------------------------------------------
         echo '<div class="fgp-products-widget">';
 
-        // 🔹 Buscador
-        echo '<div class="fgp-product-search">';
-        echo '<input type="text" class="fgp-search-input" placeholder="Buscar...">';
-        echo '</div>';
+        // Detectar si estamos en una página de categoría WooCommerce
+        $is_product_cat_page = function_exists('is_product_category') && is_product_category();
 
-        // 🔹 Categorías
-        echo '<div class="fgp-product-categories"><ul>';
-        if (!empty($settings['categories'])) {
-            foreach ($settings['categories'] as $cat) {
-                $cat_id = $cat['cat_id'];
-                $term = get_term($cat_id, 'product_cat');
-                $slug = $term->slug ?? '';
-                $label = $cat['cat_label'] ?: $term->name;
-                $thumbnail_id = get_term_meta($cat_id, 'thumbnail_id', true);
-                $img = $thumbnail_id ? wp_get_attachment_url($thumbnail_id) : '';
+        // ---------------------------------------------
+        // BUSCADOR (OCULTO EN PÁGINA DE CATEGORÍA)
+        // ---------------------------------------------
+        if (!$is_product_cat_page) {
+            echo '<div class="fgp-product-search">';
+            echo '<input type="text" class="fgp-search-input" placeholder="Buscar...">';
+            echo '<button type="button" class="fgp-clear-search" id="fgp-clear-search">Borrar Filtro</button>';
+            echo '</div>';
+        }
 
-                echo '<li class="fgp-cat" data-cat="' . esc_attr($slug) . '">';
-                if ($img) echo '<img src="' . esc_url($img) . '" alt="' . esc_attr($label) . '" class="fgp-cat-img" />';
-                echo '<span class="fgp-cat-label">' . esc_html($label) . '</span>';
-                echo '</li>';
+        // ---------------------------------------------
+        // CATEGORÍAS PERSONALIZADAS (OCULTO EN CATEGORÍA)
+        // ---------------------------------------------
+        if (!$is_product_cat_page) {
+            echo '<div class="fgp-product-categories"><ul>';
+
+            if (!empty($settings['categories'])) {
+                foreach ($settings['categories'] as $cat) {
+                    $cat_id = $cat['cat_id'];
+                    $term = get_term($cat_id, 'product_cat');
+                    if (!$term) continue;
+
+                    $slug = $term->slug;
+                    $label = $cat['cat_label'] ?: $term->name;
+
+                    $thumbnail_id = get_term_meta($cat_id, 'thumbnail_id', true);
+                    $img = $thumbnail_id ? wp_get_attachment_url($thumbnail_id) : '';
+
+                    echo '<li class="fgp-cat" data-cat="' . esc_attr($slug) . '">';
+                    if ($img) {
+                        echo '<img src="' . esc_url($img) . '" alt="' . esc_attr($label) . '" class="fgp-cat-img" />';
+                    }
+                    echo '<span class="fgp-cat-label">' . esc_html($label) . '</span>';
+                    echo '</li>';
+                }
+            }
+
+            echo '</ul></div>';
+
+            echo '<hr/>';
+        }
+
+        // ---------------------------------------------
+        // DETECTAR CONTEXTO (TIENDA / CATEGORÍA)
+        // ---------------------------------------------
+        $taxonomy_filter = [];
+
+        // Página de categoría WooCommerce
+        if ($is_product_cat_page) {
+            $term = get_queried_object();
+            if ($term && isset($term->slug)) {
+                $taxonomy_filter = [
+                    [
+                        'taxonomy' => 'product_cat',
+                        'field'    => 'slug',
+                        'terms'    => $term->slug
+                    ]
+                ];
             }
         }
-        echo '</ul></div>';
 
-        // 🔹 Título de productos
-        // echo '<h2 class="fgp-products-title">Productos</h2>';
-        echo '<hr/>';
+        // ---------------------------------------------
+        // QUERY DE PRODUCTOS
+        // ---------------------------------------------
+        $args = [
+            'post_type'      => 'product',
+            'posts_per_page' => -1,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+        ];
 
-        // 🔹 Productos (oculto por defecto)
-        $args = ['post_type' => 'product', 'posts_per_page' => -1, 'orderby' => 'date', 'order' => 'DESC'];
+        if (!empty($taxonomy_filter)) {
+            $args['tax_query'] = $taxonomy_filter;
+        }
+
         $products = new WP_Query($args);
 
-        echo '<div class="fgp-products-grid columns-' . intval($settings['columns']) . '" style="display:none;">';
+        // ---------------------------------------------
+        // GRID DE PRODUCTOS
+        // ---------------------------------------------
+        echo '<div class="fgp-products-grid columns-' . intval($settings['columns']) . '">';
+
         if ($products->have_posts()) {
             while ($products->have_posts()) {
                 $products->the_post();
                 global $product;
+
                 $cats = wp_get_post_terms(get_the_ID(), 'product_cat', ['fields' => 'slugs']);
+
                 echo '<div class="fgp-product-item" data-cats="' . esc_attr(implode(' ', $cats)) . '">';
+
                 echo '<a href="' . get_permalink() . '">';
+
                 echo get_the_post_thumbnail(get_the_ID(), 'medium');
+
                 echo '<h3>' . get_the_title() . '</h3>';
-                echo '<span class="price">' . $product->get_price_html() . '</span>';
-                echo '</a></div>';
+
+                if ($product) {
+                    echo '<span class="price">' . $product->get_price_html() . '</span>';
+                }
+
+                echo '</a>';
+                echo '</div>';
             }
+        } else {
+            echo '<p>No hay productos disponibles.</p>';
         }
-        echo '</div>'; // fgp-products-grid
+
+        echo '</div>'; // END GRID
+
         wp_reset_postdata();
 
-        echo '</div>'; // fgp-products-widget
+        echo '</div>'; // END WIDGET
     }
 }

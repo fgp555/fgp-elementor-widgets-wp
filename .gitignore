@@ -1,0 +1,17 @@
+# Ignorar todo
+*
+index.php
+hello.php
+fgp-elementor-widgets.zip
+
+# Pero NO ignorar estas rutas:
+!fgp-elementor-widgets/
+!fgp-version.json
+!fgp-elementor-widgets.zip
+!readme.md
+!.gitignore
+
+# Dentro de la carpeta fgp-elementor-widgets permitir todo:
+fgp-elementor-widgets/*
+!fgp-elementor-widgets/**
+
