@@ -30,9 +30,6 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
 
     protected function register_controls()
     {
-        // ------------------------------
-        // Configuración básica
-        // ------------------------------
         $this->start_controls_section('section_settings', [
             'label' => __('Configuración de Productos', 'fgp-elementor-widgets')
         ]);
@@ -75,15 +72,12 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
 
         $this->end_controls_section();
 
-        // ------------------------------
-        // Estilo de Productos
-        // ------------------------------
+        // Estilo de productos
         $this->start_controls_section('section_style_products', [
             'label' => __('Estilo de Productos', 'fgp-elementor-widgets'),
             'tab' => \Elementor\Controls_Manager::TAB_STYLE,
         ]);
 
-        // Columnas productos
         $this->add_control('products_columns', [
             'label' => __('Columnas de productos', 'fgp-elementor-widgets'),
             'type' => \Elementor\Controls_Manager::NUMBER,
@@ -95,7 +89,6 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
             ],
         ]);
 
-        // Background productos
         $this->add_control('product_bg', [
             'label' => __('Color de fondo del producto', 'fgp-elementor-widgets'),
             'type' => \Elementor\Controls_Manager::COLOR,
@@ -104,14 +97,12 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
             ],
         ]);
 
-        // Tipografía título
         $this->add_group_control(\Elementor\Group_Control_Typography::get_type(), [
             'name' => 'title_typography',
             'label' => __('Tipografía del título', 'fgp-elementor-widgets'),
             'selector' => '{{WRAPPER}} .fgp-product-item h3',
         ]);
 
-        // Color título
         $this->add_control('title_color', [
             'label' => __('Color del título', 'fgp-elementor-widgets'),
             'type' => \Elementor\Controls_Manager::COLOR,
@@ -120,14 +111,12 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
             ],
         ]);
 
-        // Tipografía precio
         $this->add_group_control(\Elementor\Group_Control_Typography::get_type(), [
             'name' => 'price_typography',
             'label' => __('Tipografía del precio', 'fgp-elementor-widgets'),
             'selector' => '{{WRAPPER}} .fgp-product-item .price',
         ]);
 
-        // Color precio
         $this->add_control('price_color', [
             'label' => __('Color del precio', 'fgp-elementor-widgets'),
             'type' => \Elementor\Controls_Manager::COLOR,
@@ -138,15 +127,12 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
 
         $this->end_controls_section();
 
-        // ------------------------------
         // Estilo de Categorías
-        // ------------------------------
         $this->start_controls_section('section_style_categories', [
             'label' => __('Estilo de Categorías', 'fgp-elementor-widgets'),
             'tab' => \Elementor\Controls_Manager::TAB_STYLE,
         ]);
 
-        // Columnas categorías
         $this->add_control('categories_columns', [
             'label' => __('Columnas de categorías', 'fgp-elementor-widgets'),
             'type' => \Elementor\Controls_Manager::NUMBER,
@@ -158,7 +144,6 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
             ],
         ]);
 
-        // Background categoría
         $this->add_control('category_bg', [
             'label' => __('Color de fondo de la categoría', 'fgp-elementor-widgets'),
             'type' => \Elementor\Controls_Manager::COLOR,
@@ -167,14 +152,12 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
             ],
         ]);
 
-        // Tipografía nombre de categoría
         $this->add_group_control(\Elementor\Group_Control_Typography::get_type(), [
             'name' => 'category_typography',
             'label' => __('Tipografía del nombre', 'fgp-elementor-widgets'),
             'selector' => '{{WRAPPER}} .fgp-product-categories li.fgp-cat span',
         ]);
 
-        // Color nombre de categoría
         $this->add_control('category_color', [
             'label' => __('Color del nombre', 'fgp-elementor-widgets'),
             'type' => \Elementor\Controls_Manager::COLOR,
@@ -185,8 +168,6 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
 
         $this->end_controls_section();
     }
-
-
 
     private function get_product_categories()
     {
@@ -205,29 +186,29 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
 
         $settings = $this->get_settings_for_display();
 
-        // ---------------------------------------------
-        // CONTENEDOR PRINCIPAL
-        // ---------------------------------------------
-        echo '<div class="fgp-products-widget">';
-
-        // Detectar si estamos en una página de categoría WooCommerce
+        // Detectar si estamos en modo editor de Elementor
+        $is_edit_mode = \Elementor\Plugin::$instance->editor->is_edit_mode();
         $is_product_cat_page = function_exists('is_product_category') && is_product_category();
 
-        // ---------------------------------------------
-        // BUSCADOR (OCULTO EN PÁGINA DE CATEGORÍA)
-        // ---------------------------------------------
-        if (!$is_product_cat_page) {
+        echo '<div class="fgp-products-widget">';
+
+        // 👉 Mostrar botón solo en páginas categoria-producto
+        if ($is_product_cat_page) {
+            echo '<div class="fgp-go-catalogo" style="text-align:center; margin-bottom:20px;">';
+            echo '<a href="' . esc_url(home_url('/catalogo')) . '" class="fgp-btn-catalogo" >Ir a Catálogo</a>';
+            echo '</div>';
+        }
+
+
+        // Mostrar búsqueda y categorías si no es página de categoría, o si estamos en editor
+        if (!$is_product_cat_page || $is_edit_mode) {
             echo '<div class="fgp-product-search">';
             echo '<input type="text" class="fgp-search-input" placeholder="Buscar...">';
             echo '<button type="button" class="fgp-clear-search" id="fgp-clear-search">Borrar Filtro</button>';
             echo '</div>';
-        }
 
-        // ---------------------------------------------
-        // CATEGORÍAS PERSONALIZADAS (OCULTO EN CATEGORÍA)
-        // ---------------------------------------------
-        if (!$is_product_cat_page) {
             echo '<div class="fgp-product-categories"><ul>';
+            echo '<li class="fgp-cat" data-cat="all"><span class="fgp-cat-label">Todos</span></li>';
 
             if (!empty($settings['categories'])) {
                 foreach ($settings['categories'] as $cat) {
@@ -242,57 +223,56 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
                     $img = $thumbnail_id ? wp_get_attachment_url($thumbnail_id) : '';
 
                     echo '<li class="fgp-cat" data-cat="' . esc_attr($slug) . '">';
-                    if ($img) {
-                        echo '<img src="' . esc_url($img) . '" alt="' . esc_attr($label) . '" class="fgp-cat-img" />';
-                    }
+                    if ($img) echo '<img src="' . esc_url($img) . '" alt="' . esc_attr($label) . '" class="fgp-cat-img" />';
                     echo '<span class="fgp-cat-label">' . esc_html($label) . '</span>';
+                    echo '</li>';
+                }
+            } elseif ($is_edit_mode) {
+                // Mostrar todas las categorías aunque estén vacías en editor
+                $all_cats = get_terms([
+                    'taxonomy' => 'product_cat',
+                    'hide_empty' => false,
+                ]);
+                foreach ($all_cats as $term) {
+                    echo '<li class="fgp-cat" data-cat="' . esc_attr($term->slug) . '">';
+                    echo '<span class="fgp-cat-label">' . esc_html($term->name) . '</span>';
                     echo '</li>';
                 }
             }
 
             echo '</ul></div>';
-
             echo '<hr/>';
         }
 
-        // ---------------------------------------------
-        // DETECTAR CONTEXTO (TIENDA / CATEGORÍA)
-        // ---------------------------------------------
-        $taxonomy_filter = [];
+        // Preparar consulta de productos
+        $args = [
+            'post_type' => 'product',
+            'posts_per_page' => -1, // Front-end: todos los productos
+            'orderby' => 'date',
+            'order' => 'DESC',
+        ];
 
-        // Página de categoría WooCommerce
+
         if ($is_product_cat_page) {
             $term = get_queried_object();
             if ($term && isset($term->slug)) {
-                $taxonomy_filter = [
+                $args['tax_query'] = [
                     [
                         'taxonomy' => 'product_cat',
-                        'field'    => 'slug',
-                        'terms'    => $term->slug
+                        'field' => 'slug',
+                        'terms' => $term->slug,
                     ]
                 ];
             }
         }
 
-        // ---------------------------------------------
-        // QUERY DE PRODUCTOS
-        // ---------------------------------------------
-        $args = [
-            'post_type'      => 'product',
-            'posts_per_page' => -1,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-        ];
-
-        if (!empty($taxonomy_filter)) {
-            $args['tax_query'] = $taxonomy_filter;
+        // En editor, podemos limitar si queremos, pero por defecto mostrar todos
+        if ($is_edit_mode && !empty($settings['products_per_page'])) {
+            $args['posts_per_page'] = $settings['products_per_page'];
         }
 
         $products = new WP_Query($args);
 
-        // ---------------------------------------------
-        // GRID DE PRODUCTOS
-        // ---------------------------------------------
         echo '<div class="fgp-products-grid columns-' . intval($settings['columns']) . '">';
 
         if ($products->have_posts()) {
@@ -301,30 +281,19 @@ class FGP_Products_Widget extends \Elementor\Widget_Base
                 global $product;
 
                 $cats = wp_get_post_terms(get_the_ID(), 'product_cat', ['fields' => 'slugs']);
-
                 echo '<div class="fgp-product-item" data-cats="' . esc_attr(implode(' ', $cats)) . '">';
-
                 echo '<a href="' . get_permalink() . '">';
-
                 echo get_the_post_thumbnail(get_the_ID(), 'medium');
-
                 echo '<h3>' . get_the_title() . '</h3>';
-
-                if ($product) {
-                    echo '<span class="price">' . $product->get_price_html() . '</span>';
-                }
-
-                echo '</a>';
-                echo '</div>';
+                if ($product) echo '<span class="price">' . $product->get_price_html() . '</span>';
+                echo '</a></div>';
             }
         } else {
             echo '<p>No hay productos disponibles.</p>';
         }
 
-        echo '</div>'; // END GRID
-
+        echo '</div>'; // cierre fgp-products-grid
         wp_reset_postdata();
-
-        echo '</div>'; // END WIDGET
+        echo '</div>'; // cierre fgp-products-widget
     }
 }

@@ -84,6 +84,7 @@
   background: #0073aa;
   color: #fff;
   /* padding: 10px 15px; */
+  display: none;
 }
 
 .fgp-product-categories li.fgp-cat[data-cat="all"]:hover {
@@ -107,8 +108,8 @@
 }
 
 .fgp-product-categories li.fgp-cat:not([data-cat="all"]) img {
-  width: 100%;
-  aspect-ratio: 1;
+  height: 100%;
+  aspect-ratio: 1/1;
   object-fit: cover;
   margin-bottom: 5px;
   /* border: 1px solid #ddd; */
@@ -228,4 +229,13 @@
     margin-top: 10px;
     width: 100%;
   }
+}
+.fgp-btn-catalogo {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #fff;
+  text-decoration: none;
+}
+.fgp-btn-catalogo:hover {
+  color: #666 !important;
 }
