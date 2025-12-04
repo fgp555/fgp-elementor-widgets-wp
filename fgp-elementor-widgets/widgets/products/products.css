@@ -1,16 +1,21 @@
-/* ------------------------------
-   Contenedor del widget
------------------------------- */
-.fgp-products-grid,
-.fgp-product-categories,
-.fgp-product-search {
-  margin-bottom: 20px;
+/* fgp-widget.css */
+.fgp-products-widget {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 20px;
 }
 
-/* ------------------------------
-   Buscador de productos
------------------------------- */
+.fgp-btn-catalogo {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #fff;
+  text-decoration: none;
+}
+
+.fgp-btn-catalogo:hover {
+  color: #666 !important;
+}
+
+/* fgp-search.css */
 .fgp-product-search {
   text-align: center;
   margin-bottom: 20px;
@@ -33,7 +38,6 @@
   box-shadow: 0 0 5px rgba(0, 115, 170, 0.3);
 }
 
-/* Botón "Borrar Filtro" */
 #fgp-clear-search {
   display: inline-block;
   margin-left: 10px;
@@ -51,9 +55,7 @@
   background: #d9363e;
 }
 
-/* ------------------------------
-   Categorías de productos
------------------------------- */
+/* fgp-categories.css */
 .fgp-product-categories {
   margin-bottom: 20px;
 }
@@ -66,16 +68,8 @@
   padding: 0;
   margin: 0;
   list-style: none;
-  /* display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  padding: 0;
-  margin: 0;
-  list-style: none; */
 }
 
-/* Botón "Todos" en fila separada */
 .fgp-product-categories li.fgp-cat[data-cat="all"] {
   grid-column: 1 / -1;
   justify-self: center;
@@ -83,7 +77,6 @@
   font-weight: bold;
   background: #0073aa;
   color: #fff;
-  /* padding: 10px 15px; */
   display: none;
 }
 
@@ -91,7 +84,6 @@
   background: #005f87;
 }
 
-/* Resto de categorías */
 .fgp-product-categories li.fgp-cat:not([data-cat="all"]) {
   display: flex;
   flex-direction: column;
@@ -99,11 +91,9 @@
   padding: 10px;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
-  /* border-radius: 10px; */
   text-align: center;
   font-size: 14px;
   color: #333;
-  /* background: #f8f8f8; */
   border: 1px solid transparent;
 }
 
@@ -112,8 +102,8 @@
   aspect-ratio: 1/1;
   object-fit: cover;
   margin-bottom: 5px;
-  /* border: 1px solid #ddd; */
 }
+
 .fgp-cat-label {
   margin-top: 5px;
   text-align: center;
@@ -129,9 +119,7 @@
   border-color: #fff;
 }
 
-/* ------------------------------
-   Grid de productos
------------------------------- */
+/* fgp-products-grid.css */
 .fgp-products-grid {
   display: grid;
   gap: 20px;
@@ -174,9 +162,12 @@
 }
 
 .fgp-product-item img {
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
   margin-bottom: 10px;
+  /* object-position: center center; */
 }
 
 .fgp-product-item h3 {
@@ -198,9 +189,7 @@
   text-align: center;
 }
 
-/* ------------------------------
-   Responsive
------------------------------- */
+/* fgp-responsive.css */
 @media (max-width: 1024px) {
   .fgp-products-grid.columns-4,
   .fgp-products-grid.columns-5,
@@ -230,12 +219,37 @@
     width: 100%;
   }
 }
-.fgp-btn-catalogo {
-  display: inline-block;
-  padding: 10px 20px;
-  background: #fff;
-  text-decoration: none;
+
+/* ================================
+   MOBILE: 2 columnas
+================================ */
+@media (max-width: 767px) {
+  .fgp-products-widget .fgp-products-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+  }
+
+  .fgp-products-widget .fgp-product-item h3 {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .fgp-products-widget .price {
+    font-size: 13px;
+  }
 }
-.fgp-btn-catalogo:hover {
-  color: #666 !important;
+
+/*  */
+@media (max-width: 767px) {
+  .elementor-1371 .elementor-element.elementor-element-09b8040 .fgp-product-item h3 {
+    word-spacing: 0 !important;
+    /* font-size: 0.6rem !important; */
+  }
+  .fgp-product-item {
+    padding: 0 !important;
+  }
+  #fgp-clear-search {
+    font-size: 0.6rem !important;
+    margin-left: 0 !important;
+  }
 }
