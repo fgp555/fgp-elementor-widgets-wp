@@ -1,8 +1,8 @@
 {
-  "version": "2025.12.3",
+  "version": "2025.12.4",
   "requires": "6.0",
   "tested": "6.7",
-  "last_updated": "2025-12-03",
+  "last_updated": "2025-12-4",
   "description": "Actualización del plugin FGP.",
   "changelog": "Correcciones y nuevas funciones."
 }
